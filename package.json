@@ -1,0 +1,35 @@
+{
+  "name": "clozva-storefront",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "start": "node .output/server/index.mjs",
+    "typecheck": "nuxt typecheck",
+    "test": "node --disable-warning=ExperimentalWarning --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.2.10",
+    "lucide-vue-next": "^0.577.0",
+    "nuxt": "4.7.0",
+    "pg": "^8.23.1",
+    "vue": "^3.5.0",
+    "zod": "^4.3.6"
+  },
+  "overrides": {
+    "readdir-glob": {
+      "minimatch": "11.0.9"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.23.1",
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.2.0"
+  }
+}

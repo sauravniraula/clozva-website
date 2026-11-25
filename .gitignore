@@ -1,0 +1,10 @@
+node_modules/
+.nuxt/
+.output/
+.netlify/
+dist/
+.data/
+.venv/
+.env
+.DS_Store
+__pycache__/
