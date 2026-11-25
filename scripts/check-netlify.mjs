@@ -22,7 +22,15 @@ delete process.env.DATABASE_URL
 assert.deepEqual(await (await request('/api/store-status')).json(), { checkout: false })
 const home = await request('/')
 assert.equal(home.status, 200)
-assert.match(await home.text(), /Free U\.S\. shipping/)
+const homeHtml = await home.text()
+assert.match(homeHtml, /Free U\.S\. shipping/)
+const head = homeHtml.match(/<head>([\s\S]*?)<\/head>/)?.[1] ?? ''
+const loader = [...head.matchAll(/<script\b[^>]*src="https:\/\/www\.googletagmanager\.com\/gtm\.js\?id=GTM-N48LWJMH"[^>]*>/g)]
+assert.equal(loader.length, 1, 'Expected one Google Tag Manager loader in the document head')
+assert.match(loader[0][0], /\basync\b/)
+const init = head.indexOf('window.dataLayer = window.dataLayer || []')
+assert.ok(init >= 0 && init < loader[0].index, 'Initialize the data layer before loading GTM')
+assert.ok(head.includes("gtag('js', new Date())"))
 const catalog = await request('/api/products?sale=1')
 assert.equal(catalog.status, 200)
 assert.equal((await catalog.json()).length, 3)
