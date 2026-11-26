@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ArrowDownToLine } from 'lucide-vue-next'
-useSeoMeta({ title: 'Brand assets' })
+useStoreSeo({
+  path: '/brand',
+  title: 'Brand Assets',
+  description: 'Download CLOZVA’s wordmark, tagline lockup, monogram, and Comfort Club badge in SVG or PNG.',
+})
 
 const logos = [
   { id: 'wordmark', name: '01 / Wordmark', detail: 'The primary mark for storefronts and light surfaces.' },

@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { freeShipping, money, shippingFee } from '#shared/catalog'
-useSeoMeta({ title: 'Shipping, sizing & privacy' })
+useStoreSeo({
+  path: '/help',
+  title: 'Shipping, Sizing & Privacy',
+  description: 'Check U.S. shipping rates, find your CLOZVA clog size in EU sizes 36–44, and see how the storefront handles your data.',
+})
 </script>
 
 <template>

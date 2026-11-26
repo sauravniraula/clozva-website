@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({ titleTemplate: title => title ? `${title} · CLOZVA` : 'CLOZVA — Comfort looks good.', description: 'Shop CLOZVA’s lightweight foam clogs. Everyday classics, sculpted platforms, and rugged trail styles.' })
+useSeoMeta({ titleTemplate: title => title ? `${title} · CLOZVA` : 'CLOZVA — Comfort looks good.' })
 const { restore } = useBag()
 onMounted(restore)
 </script>

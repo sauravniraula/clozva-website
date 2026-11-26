@@ -4,7 +4,18 @@ import { categories, productImage } from '#shared/catalog'
 import type { Product } from '#shared/catalog'
 
 const { data: favorites, error, refresh } = await useFetch<Product[]>('/api/products', { query: { featured: '1' } })
-useSeoMeta({ ogTitle: 'CLOZVA — Comfort looks good.', ogImage: '/images/campaign.webp' })
+const { origin, url } = useStoreSeo({
+  path: '/',
+  title: 'Lightweight Foam Clogs',
+  description: 'Explore CLOZVA Drop 001. Find lightweight foam clogs in classic, sculpted platform, rugged trail, and clip-in charm styles.',
+})
+useStoreJsonLd({
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebSite', name: 'CLOZVA', url: url.value },
+    { '@type': 'Organization', name: 'CLOZVA', url: url.value, logo: `${origin}/brand/wordmark-512.png` },
+  ],
+})
 </script>
 
 <template>

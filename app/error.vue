@@ -2,6 +2,7 @@
 import { ArrowRight } from 'lucide-vue-next'
 import type { NuxtError } from '#app'
 defineProps<{ error: NuxtError }>()
+useSeoMeta({ robots: 'noindex' })
 </script>
 
 <template>

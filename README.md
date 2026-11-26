@@ -31,6 +31,14 @@ SQLite is the local default. Set `CLOZVA_DB_PATH` to an absolute path to overrid
 
 To exercise the PostgreSQL test locally, point `TEST_DATABASE_URL` at a disposable database and run `npm test`. The test writes fixture data.
 
+## Search and sharing
+
+`/sitemap.xml` lists the home, shop, collection, sale, product, and informational pages. Product and collection URLs come from the shared catalog, and `/robots.txt` points crawlers to the sitemap. Checkout, receipts, internal search, and combined sale and collection filters carry `noindex` directives.
+
+The sitemap, canonical URLs, and social previews use Netlify’s primary site address by default. Set `NUXT_PUBLIC_SITE_URL` to the preferred production origin, such as `https://www.example.com`, to override it. Outside Netlify, the request origin is used when no override is set. Once deployed, submit `/sitemap.xml` for the production domain in Google Search Console.
+
+Product pages publish structured data for the catalog and breadcrumbs. Merchant offer markup is reserved for when the storefront accepts payments and fulfills orders.
+
 ## Assets
 
 - `/brand` provides four downloadable logo variants in SVG and PNG exports at 256, 512, and 1024 px wide. Files are in `public/brand/`.

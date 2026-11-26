@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ArrowRight, Search } from 'lucide-vue-next'
-import { categories } from '#shared/catalog'
+import { categories, productImage } from '#shared/catalog'
 import type { Product } from '#shared/catalog'
+import { salePath, shopPath } from '#shared/seo'
 
 const route = useRoute()
 const activeCategory = computed(() => categories.find(category => category.id === route.query.category))
@@ -12,7 +13,23 @@ const searchText = ref(query.value)
 watch(query, value => { searchText.value = value })
 const { data: products, status, refresh } = await useFetch<Product[]>('/api/products', { query: computed(() => ({ category: activeCategory.value?.id, q: query.value, sort: sort.value, sale: sale.value ? '1' : undefined })) })
 const title = computed(() => query.value ? 'Search the drop.' : sale.value ? 'The Sale Edit.' : activeCategory.value?.title || 'Shop the drop.')
-useSeoMeta({ title })
+useStoreSeo(() => {
+  const category = activeCategory.value
+  if (query.value.trim()) return { title: 'Product Search', description: 'Search the CLOZVA clog catalog by style or color.' }
+  if (sale.value) return {
+    path: category ? undefined : salePath,
+    title: 'Foam Clogs on Sale',
+    description: 'Browse marked-down CLOZVA clogs, including select classics, platforms, and pairs with clip-in charms.',
+  }
+  if (category) return {
+    path: shopPath(category.id),
+    title: category.title,
+    description: `Explore ${category.title} by CLOZVA. ${category.description}`,
+    image: productImage(category.image),
+    imageAlt: `CLOZVA clogs from ${category.title}`,
+  }
+  return { path: shopPath(), title: 'Shop Foam Clogs', description: 'Shop CLOZVA foam clogs by style and color. Browse everyday classics, lightweight platforms, trail clogs, and pairs with charms.' }
+})
 function filters(category?: string, q = query.value, order = sort.value, discounted = false) {
   return { path: '/shop', query: { category: category || undefined, q: q || undefined, sort: order || undefined, sale: discounted ? '1' : undefined } }
 }

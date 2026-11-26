@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { ArrowUpRight } from 'lucide-vue-next'
-useSeoMeta({ title: 'Our story' })
+useStoreSeo({
+  path: '/about',
+  title: 'Our Story',
+  description: 'Meet CLOZVA and discover why our first collection starts with an everyday foam clog, from the Classic to the Charm Edit.',
+  image: '/images/club.webp',
+  imageAlt: 'Sage clogs worn with cream socks on a sunny day',
+})
 </script>
 
 <template>

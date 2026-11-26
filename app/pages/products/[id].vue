@@ -2,6 +2,7 @@
 import { ArrowLeft, ArrowRight, ChevronRight, Minus, Plus, Ruler, ShoppingBag, Sparkles, Truck } from 'lucide-vue-next'
 import { categories, freeShipping, money, productImage, shippingFee, sizes } from '#shared/catalog'
 import type { Product } from '#shared/catalog'
+import { productPath, shopPath } from '#shared/seo'
 
 const route = useRoute()
 definePageMeta({ key: route => route.path })
@@ -11,7 +12,37 @@ if (!data.value) throw createError({ statusCode: error.value?.statusCode ?? 500,
 const product = data.value
 const category = categories.find(entry => entry.id === product.category)!
 const { data: variants } = await useFetch<Product[]>('/api/products', { query: { category: category.id } })
-useSeoMeta({ title: `${product.name} in ${product.color}`, description: product.description, ogImage: productImage(product.image) })
+const productTitle = `${product.name} in ${product.color}`
+const productImageAlt = `${productTitle}${product.charms ? ' with clip-in charms' : ''}`
+const { origin, url, image } = useStoreSeo({
+  path: productPath(product.id),
+  title: productTitle,
+  description: `${productTitle}. ${product.description}`,
+  image: productImage(product.image),
+  imageAlt: productImageAlt,
+})
+useStoreJsonLd({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Product',
+      name: productTitle,
+      url: url.value,
+      description: product.description,
+      image: image.value,
+      color: product.color,
+      brand: { '@type': 'Brand', name: 'CLOZVA' },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Shop', item: `${origin}${shopPath()}` },
+        { '@type': 'ListItem', position: 2, name: category.name, item: `${origin}${shopPath(category.id)}` },
+        { '@type': 'ListItem', position: 3, name: productTitle, item: url.value },
+      ],
+    },
+  ],
+})
 const { add, items } = useBag()
 const selected = ref<number>()
 const quantity = ref(1)
@@ -29,9 +60,9 @@ function addToBag() {
 
 <template>
   <section class="shell detail">
-    <nav class="breadcrumbs" aria-label="Breadcrumb"><NuxtLink to="/shop">Shop</NuxtLink><ChevronRight :size="13" /><NuxtLink :to="`/shop?category=${category.id}`">{{ category.name }}</NuxtLink><ChevronRight :size="13" /><span>{{ product.color }}</span></nav>
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><NuxtLink :to="shopPath()">Shop</NuxtLink><ChevronRight :size="13" /><NuxtLink :to="shopPath(category.id)">{{ category.name }}</NuxtLink><ChevronRight :size="13" /><span>{{ product.color }}</span></nav>
     <div class="detail-grid">
-      <div class="detail-media"><img :src="productImage(product.image)" :alt="`${product.name} in ${product.color}${product.charms ? ' with clip-in charms' : ''}`" width="1024" height="1024" fetchpriority="high"><span v-if="product.compareAt || product.badge" class="product-badge lime">{{ product.compareAt ? 'SALE' : product.badge }}</span><span class="eyebrow detail-fig">CLOZVA / {{ category.number }}</span></div>
+      <div class="detail-media"><img :src="productImage(product.image)" :alt="productImageAlt" width="1024" height="1024" fetchpriority="high"><span v-if="product.compareAt || product.badge" class="product-badge lime">{{ product.compareAt ? 'SALE' : product.badge }}</span><span class="eyebrow detail-fig">CLOZVA / {{ category.number }}</span></div>
       <div class="detail-copy">
         <p class="eyebrow section-kicker"><span></span> {{ category.title.toUpperCase() }}</p><h1>{{ product.name }}</h1><div class="detail-price">{{ money(product.price) }} <del v-if="product.compareAt"><span class="sr-only">Original price: </span>{{ money(product.compareAt) }}</del><small v-if="product.compareAt">Save {{ money(product.compareAt - product.price) }}</small></div><p class="detail-description">{{ product.description }}</p>
         <div v-if="product.charms" class="charms-detail"><Sparkles :size="21" /><div><strong>Five clip-in charms included</strong><p>{{ product.charms }}</p></div></div>
