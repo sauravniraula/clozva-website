@@ -34,6 +34,15 @@ const home = await request('/')
 assert.equal(home.status, 200)
 const homeHtml = await home.text()
 assert.match(homeHtml, /Free U\.S\. shipping/)
+const blogUrl = 'https://clozva.wordpress.com/'
+const socialUrls = ['https://www.instagram.com/clozva/', 'https://www.reddit.com/user/clozva/']
+for (const label of ['Main navigation', 'Mobile navigation', 'Footer help links']) {
+  const navigation = [...homeHtml.matchAll(/<nav\b[^>]*aria-label="([^"]+)"[^>]*>([\s\S]*?)<\/nav>/g)]
+    .find(([, name]) => name === label)?.[2] ?? ''
+  assert.ok(getTags(navigation, 'a').some(link => link.href === blogUrl), `Expected the Blog link in ${label}`)
+}
+const footer = homeHtml.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] ?? ''
+assert.deepEqual(getTags(footer, 'a').filter(link => socialUrls.includes(link.href)).map(link => link.href), socialUrls)
 const head = getHead(homeHtml)
 const loader = [...head.matchAll(/<script\b[^>]*src="https:\/\/www\.googletagmanager\.com\/gtm\.js\?id=GTM-N48LWJMH"[^>]*>/g)]
 assert.equal(loader.length, 1, 'Expected one Google Tag Manager loader in the document head')
@@ -81,6 +90,7 @@ for (const path of publicPaths) {
 assert.equal(meta(head, 'og:image'), `${siteUrl}/images/campaign.webp`)
 const homeSchema = schema(head)['@graph']
 assert.ok(homeSchema.some(node => node['@type'] === 'WebSite' && node.name === 'CLOZVA' && node.url === `${siteUrl}/`))
+assert.deepEqual(homeSchema.find(node => node['@type'] === 'Organization')?.sameAs, socialUrls)
 const sortedHead = getHead(await (await request('/shop?category=classic&sort=price-asc&utm_source=test')).text())
 assert.deepEqual(canonicals(sortedHead), [`${siteUrl}/shop?category=classic`])
 const productHead = getHead(await (await request('/products/classic-lime?utm_source=test')).text())

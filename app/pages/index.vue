@@ -2,6 +2,7 @@
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Feather, Footprints, Wind } from 'lucide-vue-next'
 import { categories, productImage } from '#shared/catalog'
 import type { Product } from '#shared/catalog'
+import { socialProfiles } from '#shared/site-links'
 
 const { data: favorites, error, refresh } = await useFetch<Product[]>('/api/products', { query: { featured: '1' } })
 const { origin, url } = useStoreSeo({
@@ -13,7 +14,7 @@ useStoreJsonLd({
   '@context': 'https://schema.org',
   '@graph': [
     { '@type': 'WebSite', name: 'CLOZVA', url: url.value },
-    { '@type': 'Organization', name: 'CLOZVA', url: url.value, logo: `${origin}/brand/wordmark-512.png` },
+    { '@type': 'Organization', name: 'CLOZVA', url: url.value, logo: `${origin}/brand/wordmark-512.png`, sameAs: socialProfiles.map(profile => profile.url) },
   ],
 })
 </script>

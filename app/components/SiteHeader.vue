@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ArrowDownRight, ArrowRight, Menu, Search, ShoppingBag, X } from 'lucide-vue-next'
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Menu, Search, ShoppingBag, X } from 'lucide-vue-next'
 import { categories, money, freeShipping } from '#shared/catalog'
+import { blogUrl } from '#shared/site-links'
 
 const { count, isOpen } = useBag()
 const route = useRoute()
@@ -32,6 +33,7 @@ async function search() {
       <NuxtLink to="/" class="wordmark" aria-label="CLOZVA home">clozva<span>.</span></NuxtLink>
       <nav class="desktop-nav" aria-label="Main navigation">
         <NuxtLink v-for="link in links" :key="link.to" :to="link.to" :class="{ active: active(link.to), 'sale-nav': link.label === 'Sale' }">{{ link.label }}</NuxtLink>
+        <a :href="blogUrl">Blog</a>
       </nav>
       <div class="header-actions">
         <button class="icon-btn" aria-label="Search" @click="open('search')"><Search :size="22" :stroke-width="1.7" /></button>
@@ -46,7 +48,10 @@ async function search() {
         <input v-model="query" aria-label="Search products" placeholder="Try “sage” or “platform”" type="search" maxlength="100">
         <button class="btn btn-dark" type="submit">Search <ArrowRight :size="17" /></button>
       </form>
-      <nav v-else class="menu-links" aria-label="Mobile navigation"><NuxtLink v-for="link in links" :key="link.to" :to="link.to" @click="close">{{ link.label }} <ArrowRight :size="19" /></NuxtLink></nav>
+      <nav v-else class="menu-links" aria-label="Mobile navigation">
+        <NuxtLink v-for="link in links" :key="link.to" :to="link.to" @click="close">{{ link.label }} <ArrowRight :size="19" /></NuxtLink>
+        <a :href="blogUrl" @click="close">Blog <ArrowUpRight :size="19" aria-hidden="true" /></a>
+      </nav>
     </div>
   </dialog>
 </template>
