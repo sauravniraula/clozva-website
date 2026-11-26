@@ -17,7 +17,7 @@ Open <http://127.0.0.1:3100>. For a production build and local preview:
 npm test
 npm run typecheck
 npm run build
-HOST=127.0.0.1 PORT=3100 npm start
+HOST=127.0.0.1 PORT=3100 npm start 
 ```
 
 SQLite is the local default. Set `CLOZVA_DB_PATH` to an absolute path to override `.data/clozva.sqlite`, or set a server-side `DATABASE_URL` to use PostgreSQL. Stock is seeded once per size and decremented when orders are placed. The preview does not process payments, send emails or ship products. Before accepting real orders, connect fulfillment and payments and finalize the catalog and policies.
